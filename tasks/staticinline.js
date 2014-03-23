@@ -54,6 +54,16 @@ module.exports = function(grunt) {
     });
   };
 
+  var findReplaceXlink = function(templatePath, content, basepath){
+    return content.replace(/<image[^<]*xlink:href=['"]([^'"]+)['"][^<]*inlinesvg=['"]true['"][^<]*\/?\s*>/g, function(match, src){
+        var srcPath = resolveFilePath(templatePath, src, basepath);
+        if(srcPath){
+          return match.replace(/inlinesvg=['"]true['"]/g, '').replace(src, datauri(srcPath));
+        }
+        return '';
+    });
+  };
+
   var findReplaceVariables = function(options, content){
     Object.keys(options.vars).forEach(function(key){
       var re = new RegExp(options.prefix + key + options.suffix, "g");
@@ -66,6 +76,7 @@ module.exports = function(grunt) {
     var result = findReplaceLink(templatePath, content, options.basepath);    
     result = findReplaceScript(templatePath, result, options.basepath);
     result = findReplaceImg(templatePath, result, options.basepath);
+    result = findReplaceXlink(templatePath, result, options.basepath);
     return findReplaceVariables(options, result);
   };
 
