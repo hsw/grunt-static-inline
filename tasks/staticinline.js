@@ -45,7 +45,7 @@ module.exports = function(grunt) {
   };
 
   var findReplaceImg = function(templatePath, content, basepath){
-    return content.replace(/<img[^<]*src=['"]([^'"]+)['"][^<]*inline=['"]true['"][^<]*\/?\s*>/g, function(match, src){
+    return content.replace(/<(?:img|image)[^<]*src=['"]([^'"]+)['"][^<]*inline=['"]true['"][^<]*\/?\s*>/g, function(match, src){
         var srcPath = resolveFilePath(templatePath, src, basepath);
         if(srcPath){
           return match.replace(/inline=['"]true['"]/g, '').replace(src, datauri(srcPath));
